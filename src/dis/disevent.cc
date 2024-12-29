@@ -245,7 +245,7 @@ double Meff2=Meff*Meff;
       double q = sqrt (kwad (Meff + nu) - W2);
       double kprim = sqrt (kwad (E - nu) - m2);
       double cth = (E2 + kprim * kprim - q * q) / 2 / E / kprim;
-      if (cth>1 && cth<1+1e-12 )
+      if (cth>1 && cth<1+2e-12 )
 	cth=1;
       
       vec kkprim;		//the unit vector in the direction of scattered lepton
