@@ -5,15 +5,17 @@
 
 extern double lepton_mass(int lepton_in, bool cur);
 
-void kinfinder(vec b, vec& d, double kos);
+void   kinfinder(vec b, vec& d, double kos);
 
-void kin2part(double hama, int nukleon, int meson, vect& finnuk, vect& finpion);
+double kin1part(double hama, int nukleon, int meson, vect& finnuk, vect& finpion, vec kierunek);
 
-void kin3part(vect neutr, vect finlep, double hama, int nukleon2, int meson, vect& finnuk, vect& finpion);
+void   kin2part(double hama, int nukleon, int meson, vect& finnuk, vect& finpion);
+
+void   kin3part(vect neutr, vect finlep, double hama, int nukleon2, int meson, vect& finnuk, vect& finpion);
 
 double kin4part(vect neutr, vect finlep, double hama, int nukleon2, int meson, vect& finnuk, vect& finpion, int ANLang);
 
-void rotation(vect& cztero, vec trzy);
+void   rotation(vect& cztero, vec trzy);
 
 double binen(vec mom, int p, int n);
 

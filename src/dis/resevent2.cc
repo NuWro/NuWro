@@ -48,7 +48,6 @@ Channels are labelled by 4 integers corresponding to: nu/anu   cc/nc   proton/ne
 #include "nucleus.h"
 
 extern "C" int pycomp_(const int *);
-extern double SPP[2][2][2][3][40];
 
 void resevent2(params &p, event &e, nucleus &t, bool cc) {
   e.weight = 0;              // if kinmetically forbidden

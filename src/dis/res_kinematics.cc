@@ -65,6 +65,42 @@ bool res_kinematics::generate_kinematics(const double &res_dis_cut) {
   const double cosine = (pow2(neutrino.E()) + pow2(mom) - pow2(q3)) / 2 / neutrino.E() / mom;  // scattering angle
 
   if (abs(cosine) > 1) return false;  // impossible kinematics
+  if (pow2(neutrino.E() - q.t) - lepton_mass2 < 0) return false;
+
+  vec mom_dir;                               // the unit vector in the direction of scattered lepton
+  kinfinder(neutrino.p(), mom_dir, cosine);  // TODO: change this function!!!
+
+  // final lepton kinematics done
+  lepton = vect(neutrino.E() - q.t, mom_dir * mom);
+
+  // update momentrum transfer
+  q = neutrino.p() - lepton.p();
+
+  // calculate the speed of hadronic system
+  hadron_speed = q / sqrt(W2 + q3 * q3);
+
+  return true;
+}
+
+bool res_kinematics::generate_kinematics(double _Q2, double _W)
+{
+  // fix invariant mass (for tests)
+  W = _W;
+  W2 = W * W;
+
+  // fix Q2 (for tests)
+  q.t = (W2 - effective_mass2 + _Q2)/2/effective_mass;
+
+  // calculate jacobian
+  jacobian = 1. / 2 / res_kinematics::avg_nucleon_mass;
+
+  // temp kinematics variables
+  const double q3 = sqrt(pow2(effective_mass + q.t) - W2);                                     // momentum transfer
+  const double mom = sqrt(pow2(neutrino.E() - q.t) - lepton_mass2);                            // final lepton momentum
+  const double cosine = (pow2(neutrino.E()) + pow2(mom) - pow2(q3)) / 2 / neutrino.E() / mom;  // scattering angle
+
+  if (abs(cosine) > 1) return false;  // impossible kinematics
+  if (pow2(neutrino.E() - q.t) - lepton_mass2 < 0) return false;
 
   vec mom_dir;                               // the unit vector in the direction of scattered lepton
   kinfinder(neutrino.p(), mom_dir, cosine);  // TODO: change this function!!!
@@ -110,4 +146,5 @@ double get_binding_energy(const params &p, particle& target, nucleus &t) {
     default:
       return 0;
   }
+  return 0;
 }

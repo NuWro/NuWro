@@ -132,7 +132,9 @@ inline bool nucleus::pauli_blocking_old (particle &pa, double p0)    // TRUE = P
 		return false;
 	switch(kMomDist)
 	{
+		case 0:	 return false;
 		case 2:	 return pa.momentum()<localkf(pa); // Local Fermi Gas
+		case 4:	 return pa.momentum()<localkf(pa); // Local Fermi Gas
 		case 5:	 return pa.momentum()<p0;                            // deuteron
 		default: return pa.momentum()<_kf;                           // Global Fermi Gas
 	}
@@ -170,7 +172,10 @@ inline  bool nucleus::pauli_blocking (particle & pa)
 		return false;
 	switch(kMomDist)
 	{
+		case 0:
+			return false;
 		case 2:
+		case 4:
 			return pa.momentum()<localkf(pa);// Local FG
 		default:
 			return pa.momentum()<_kf;                           // Global FG	

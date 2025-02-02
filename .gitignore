@@ -6,6 +6,7 @@
 *.par
 *.pdf
 *.pcm
+doc/doxygen/html
 *.geany
 !CMakeLists.txt
 !/data

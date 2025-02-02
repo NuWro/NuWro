@@ -58,7 +58,7 @@ public:
 //     par.nucleus_target=model[i] ? model[i] : get_model(p[i],n[i]);
      par.nucleus_E_b= Eb[i]? Eb[i]:get_Eb(p[i],n[i]);
      par.nucleus_kf=  kf[i]?kf[i]:get_kf(p[i],n[i]);
-     par.nucleus_target=model[i]?model[i]:get_model(p[i],n[i]);
+    //  par.nucleus_target=model[i]?model[i]:get_model(p[i],n[i]);
      
 //     par.list();
    }

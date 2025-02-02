@@ -23,13 +23,13 @@
 #include <TMCParticle.h>
 #include <TPythia6.h>
 #include "singlepionhadr.h"
+#include "singlepion.h"
 
 TPythia6 *pythia3 = new TPythia6 ();
 extern "C" int pycomp_ (const int *);
 
-extern double COUNTER[2][2][2][3][40];
-extern double OVERALL[2][2][2][40];	//in OVERALL we do not distiguish channels
-extern double SPP[2][2][2][3][40];
+// extern double COUNTER[2][2][2][3][40];
+// extern double OVERALL[2][2][2][40];	//in OVERALL we do not distiguish channels
 
 extern double sppweight;
 
@@ -89,7 +89,7 @@ singlepionhadr (double E, int j, int k, int l, int s, double nu)
   else
     nukleon = 2112;
 
-  double W = 1210 + 20 * s;
+  double W = SPP_MIN + NSPPSize * s;
 
   int nParticle = 0;
   int nCharged = 0;

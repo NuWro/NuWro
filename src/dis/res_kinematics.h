@@ -13,6 +13,7 @@ struct res_kinematics {
   res_kinematics(const event& e, nucleus& t);  //!< initialize basic kinmatics
 
   bool generate_kinematics(const double& res_dis_cut);  //!< set the rest of kinematics
+  bool generate_kinematics(double _Q2, double _W);      //!< fix Q2, W
 
   void set_kinematics(event& e);  //!< set kinematics based on already generated event
 

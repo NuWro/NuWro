@@ -242,6 +242,9 @@ int main (int argc, char *argv[]){
     /// The vertex ID of the parent particle vertex.
     int fNuParentProNVtx;
 
+    double W, Q2;
+    int flag_delta;
+
     // Create a TTree        
     const int fEmpty=-999999;  
       
@@ -298,6 +301,10 @@ int main (int argc, char *argv[]){
       fOutputTree->Branch("NuParentProP4",   fNuParentProP4,   "NuParentProP4[4]/D"    );
       fOutputTree->Branch("NuParentProX4",   fNuParentProX4,   "NuParentProX4[4]/D"    );
       fOutputTree->Branch("NuParentProNVtx",&fNuParentProNVtx, "NuParentProNVtx/I"     );  //obsolete
+
+      fOutputTree->Branch("W", &W, "W/D");
+      fOutputTree->Branch("Q2", &Q2, "Q2/D");
+      fOutputTree->Branch("flag_delta", &flag_delta, "flag_delta/I");
       
       ncopied=0;//reset to start copying again
       //---second loop saving events to a sigle file---
@@ -322,6 +329,9 @@ int main (int argc, char *argv[]){
 	  fEvtVtx[2]=e->r.z/1000;
 	  fEvtVtx[3]=0.;
 	  fStdHepN=0;
+    W = e->W();
+    Q2 = - e->q2();
+    flag_delta = e->flag.res_delta;
 	  
 	  //------------incoming particles---------------
 	  int nuccode=1e9+e->par.nucleus_p*1e4+(e->par.nucleus_p+e->par.nucleus_n)*1e1;//pdg target nucleus

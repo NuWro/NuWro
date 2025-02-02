@@ -14,7 +14,7 @@
 #include "../dis/resevent2.h"
 #include "../dis/singlepion.h"
 
-extern double SPP[2][2][2][3][40];
+// extern double SPP[2][2][2][3][40];
 
 extern "C" {
 void shhpythiaitokay_(void);

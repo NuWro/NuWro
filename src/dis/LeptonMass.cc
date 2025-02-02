@@ -54,6 +54,39 @@ void kinfinder(vec b, vec& d, double kos) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////Decay of hadronic mass W into 2 particles; known direction
+/////////////////Return momentum of pion if masses are averaged
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+double kin1part(double hama, int nukleon2, int meson, vect& finnuk, vect& finpion, vec kierunek) {
+  double nukmass, pionmass;
+  double W2 = hama * hama;
+  double W4 = W2 * W2;
+
+  if (nukleon2 == 2212)               nukmass = 938.27;
+  if (nukleon2 == 2112)               nukmass = 939.565;
+  if (meson == 211 || meson == -211) pionmass = 139.57;
+  if (meson == 111)                  pionmass = 134.98;
+
+  double nukmass2  = nukmass * nukmass;
+  double pionmass2 = pionmass * pionmass;
+
+  if (hama < 1080) cout << "error!!! Delta decay is kinematically impossible !!!" << endl;
+
+  double momentum =
+         sqrt(W4 - 2 * W2 * (pionmass2 + nukmass2) + (nukmass2 - pionmass2) * (nukmass2 - pionmass2)) / 2.0 / hama;
+  double nukenergy  = (W2 + nukmass2 - pionmass2) / 2.0 / hama;
+  double pionenergy = (W2 - nukmass2 + pionmass2) / 2.0 / hama;
+
+  finnuk  = vect( nukenergy,  momentum * kierunek.x,  momentum * kierunek.y,  momentum * kierunek.z);
+  finpion = vect(pionenergy, -momentum * kierunek.x, -momentum * kierunek.y, -momentum * kierunek.z);
+
+  // put average masses and return the momentum in that case
+  nukmass2  = 881568.315821;
+  pionmass2 =  19054.761849;
+  return sqrt(W4 - 2 * W2 * (pionmass2 + nukmass2) + (nukmass2 - pionmass2) * (nukmass2 - pionmass2)) / 2.0 / hama;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////Decay of hadronic mass W into 2 particles; no correlations
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void kin2part(double hama, int nukleon2, int meson, vect& finnuk, vect& finpion) {

@@ -6,38 +6,36 @@
 using namespace std;
 #include "singlepion.h"
 
-extern double SPP[2][2][2][3][40];
-
 double
 SPPF (int j, int k, int l, int t, double W)
 {
-  if (W < 1210)
+  if (W < SPP_MIN)
     return SPP[j][k][l][t][0];
 
-  if (W >= 1990)
+  if (W >= SPP_MAX)
     {
       cout << "warning! W out of allowed range!" << endl;
-      return SPP[j][k][l][t][39];
+      return SPP[j][k][l][t][NSPPbins-1];
     }
 
-  if (W > 1210 && W < 1990)
+  if (W > SPP_MIN && W < SPP_MAX)
     {
-      double Wdiff = W - 1210.0;
-      int bin = int (Wdiff / 20.0);
-      double surplus = Wdiff - bin * 20.0;
-      return (1 - surplus / 20.0) * SPP[j][k][l][t][bin] +
-	surplus / 20.0 * SPP[j][k][l][t][bin + 1];
+      double Wdiff = W - SPP_MIN;
+      int bin = int (Wdiff / NSPPSize);
+      double surplus = Wdiff - bin * NSPPSize;
+      return (1 - surplus / NSPPSize) * SPP[j][k][l][t][bin] +
+	surplus / NSPPSize * SPP[j][k][l][t][bin + 1];
     }
    return 0;  
 }
 
 
 double
-alfadis (int j, int k, int l, int t, double W)
+alfadis (int j, int k, int l, int t, double W, double blending_start, double blending_end)
 {
   double alfa = 0;
-  double W_min = 1300;
-  double W_max = 1600;
+  double & W_min = blending_start;
+  double & W_max = blending_end;
 //cout<<j<<"  "<<k<<"  "<<l<<endl;
   if (k == 1 || ((j == 0 && l == 0) || (j == 1 && l == 1)))
     {				//cout<<"a"; 
@@ -83,11 +81,11 @@ alfadis (int j, int k, int l, int t, double W)
     return 0;
 }
 
-double betadis (int j, int k, int l, int t, double W, double bkgr)
+double betadis (int j, int k, int l, int t, double W, double bkgr, double blending_start, double blending_end)
 {
   double alfa = 0;
-  double W_min = 1300;
-  double W_max = 1600;
+  double & W_min = blending_start;
+  double & W_max = blending_end;
 //cout<<j<<"  "<<k<<"  "<<l<<endl;
   if (k == 1 || ((j == 0 && l == 0) || (j == 1 && l == 1)))
     {				//cout<<"a"; 
@@ -136,7 +134,7 @@ double betadis (int j, int k, int l, int t, double W, double bkgr)
 
 
 double
-alfadelta (int j, int k, int l, int t, double W)
+alfadelta (int j, int k, int l, int t, double W, double blending_start, double blending_end)
 {
-  return 1 - alfadis (j, k, l, t, W);
+  return 1 - alfadis (j, k, l, t, W, blending_start, blending_end);
 }

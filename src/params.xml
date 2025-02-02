@@ -391,13 +391,32 @@
     </options>
   </param>
   <param name="spp_precision" type="text" ctype="int" default="500">
-    <description><![CDATA[recommended value is  500, this controls the precision in RES-DIS boundary region]]></description>
+    <description><![CDATA[recommended value is 500, this controls the precision in RES-DIS boundary region]]></description>
   </param>
   <param name="res_dis_cut" type="text" ctype="double" default="1600">
     <description><![CDATA[res dis boundary in MeV, should be 1600]]></description>
   </param>
   <param name="bkgrscaling" type="text" ctype="double" default="0.0">
     <description><![CDATA[scaling of non resonant backgroung; should be in the range -1.3...+1.3]]></description>
+  </param>
+  <param name="res_kind" type="select" ctype="int" default="1">
+    <description><![CDATA[Switch between the standard spp (1) and the Hybrid (2) models]]></description>
+    <options>
+      <option key="1"><![CDATA[Standard spp model]]></option>
+      <option key="2"><![CDATA[Hybrid model]]></option>
+    </options>
+  </param>
+  <param name="res_hybrid_sampling" type="select" ctype="int" default="4">
+    <description><![CDATA[The cross section used in the Hybrid model]]></description>
+    <options>
+      <option key="1"><![CDATA[2d tabularized]]></option>
+      <option key="2"><![CDATA[3d tabularized]]></option>
+      <option key="3"><![CDATA[3d calculated]]></option>
+      <option key="4"><![CDATA[4d calculated]]></option>
+    </options>
+  </param>
+  <param name="res_hybrid_resampling" type="text" ctype="int" default="0">
+    <description><![CDATA[(If applicable) the number of calculated points, for each event, used to approximate the costheta_pi variable. (0) means to use the tabularized distributions.]]></description>
   </param>
   <param name="coh_mass_correction" type="checkbox" ctype="bool" default="1">
     <description><![CDATA[Rein Sehgal correction to CC coherent single pion production]]></description>
@@ -559,6 +578,15 @@
   </param>
   <param name="mixed_order" type="checkbox" ctype="bool" default="1">
     <description><![CDATA[random order of events in uotut file]]></description>
+  </param>
+    <param name="res_dis_blending_start" type="checkbox" ctype="double" default="2800">
+    <description><![CDATA[random order of events in uotut file]]></description>
+  </param>
+  <param name="res_dis_blending_end" type="checkbox" ctype="double" default="3200">
+    <description><![CDATA[random order of events in uotut file]]></description>
+  </param>
+  <param name="table_path" type="text" ctype="string" default="">
+    <description><![CDATA[The location to look for tabular date]]></description>
   </param>
   <param name="kaskada_events" type="checkbox" ctype="bool" default="0" >
     <description><![CDATA[Use already generated events for kaskada]]></description>

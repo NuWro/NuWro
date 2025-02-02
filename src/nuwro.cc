@@ -20,6 +20,7 @@
 #include "dis/singlepion.h"
 #include "dis/disevent.h"
 #include "dis/resevent2.h"
+#include "resevent_hybrid.h"
 #include "cohevent2.h"
 #include "coh.h"
 #include "mecevent.h"
@@ -37,7 +38,7 @@
 #include "output.h"
 
 
-extern double SPP[2][2][2][3][40];
+// extern double SPP[2][2][2][3][40];
 //extern double sppweight;
 extern "C" {
 void shhpythiaitokay_(void);
@@ -139,7 +140,8 @@ void NuWro::init (int argc, char **argv)
 	p.list (string(a.output)+".par");
 	p1=&p;
 	rew.init(p);
-	_progress.open(a.progress);
+	if(a.progress)
+		_progress.open(a.progress);
 	frandom_init(p.random_seed);
 
 	frame_bottom();
@@ -322,7 +324,12 @@ void NuWro::makeevent(event* e, params &p)
 			e->flag.res=e->flag.cc=true;
 			if (p.dyn_res_cc) // res cc
 			{
-				resevent2 (p, *e, *_nucleus, true);
+				switch(p.res_kind)
+				{
+					case 1:resevent2 (p, *e, *_nucleus, true);break;
+					case 2:resevent_hybrid (p, *e, *_nucleus, true);break;
+					default:resevent2 (p, *e, *_nucleus, true);break;
+				}
 				if (p.pauli_blocking)
 					mypauli_spp (*e, *_nucleus);
 			}
@@ -482,6 +489,21 @@ void NuWro::makeevent(event* e, params &p)
 
 void NuWro::finishevent(event* e, params &p)
 {
+  // Resample independent variables not used for event acceptance
+  if( e->flag.res && e->flag.cc )
+  {
+    if( p.res_kind == 2 && e->flag.res_delta )
+    {
+      // for consistency reasons, the simplest solution for now is to recreate the nucleus
+      nucleus *nucl = make_nucleus(p);
+      if( p.res_hybrid_sampling == 1 && e->flag.need_resample_dir )
+        resevent_dir_hybrid(*e, *nucl, p.res_hybrid_resampling);
+      else if( p.res_hybrid_sampling < 4 && e->flag.need_resample_phi )
+        resevent_phi_hybrid(*e, *nucl);
+      delete nucl;
+    }
+  }
+
 	for(int i=0;i<1/* e->in.size()*/;i++)
 	{
 		e->in[i].endproc=e->dyn;
@@ -653,7 +675,7 @@ void NuWro::test_events(params & p)
 				case 0: 
 					break;
 				case 1: 
-					finishevent(e, p);
+					// finishevent(e, p);
 					t1->Fill ();
 					break;
 				case 2:

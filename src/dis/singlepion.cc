@@ -20,6 +20,7 @@
 #include <TPythia6.h>
 #include "singlepionhadr.h"
 #include "params.h"
+#include "singlepion.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,9 +42,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////   SPP is then used to define actual spp function in the file alfa.cc
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-double COUNTER[2][2][2][3][40];
-double OVERALL[2][2][2][40];	//in OVERALL we do not distiguish channels
-double SPP[2][2][2][3][40];
+double COUNTER[2][2][2][3][NSPPbins];
+double OVERALL[2][2][2][NSPPbins];	//in OVERALL we do not distiguish channels
+double SPP[2][2][2][3][NSPPbins];
 
 double sppweight;
 
@@ -63,14 +64,14 @@ singlepion (params & p)		//produce SPP table
 	    {
 	      for (int n = 0; n < 3; n++)	//channel choice
 		{
-		  for (int sa = 0; sa < 40; sa++)	//invariant hadronic mass
+		  for (int sa = 0; sa < NSPPbins; sa++)	//invariant hadronic mass
 		    {
 		      OVERALL[j][k][l][sa] = 0;
 		      COUNTER[j][k][l][n][sa] = 0;
 		    }
     }}}}
 
-  double E = 2000;		//typical (anti-)neutrino energy; SPP should not depend on the choice of E
+  double E = 20000;		//typical (anti-)neutrino energy; SPP should not depend on the choice of E
   double m;
 
   for (int j = 0; j < 2; j++)	//neutrino or antineutrino
@@ -79,9 +80,9 @@ singlepion (params & p)		//produce SPP table
 	{
 	  for (int l = 0; l < 2; l++)	//proton or neutron
 	    {
-	      for (int s = 0; s < 40; s++)
+	      for (int s = 0; s < NSPPbins; s++)
 		{
-		  double W = 1210 + s * 20;
+		  double W = SPP_MIN + s * NSPPSize;
 		  if (k == 0)
 		    m = 105;
 		  if (k == 1)
@@ -151,7 +152,7 @@ singlepion (params & p)		//produce SPP table
 	    {
 	      for (int n = 0; n < 3; n++)	//channel choice
 		{
-		  for (int s = 0; s < 40; s++)	//invariant hadronic mass
+		  for (int s = 0; s < NSPPbins; s++)	//invariant hadronic mass
 		    {
 		      if (OVERALL[j][k][l][s] == 0)
 			SPP[j][k][l][n][s] = 0;

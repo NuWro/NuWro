@@ -510,7 +510,7 @@ double calc_chi(string in)
 	double dif[51];
 		
 	for (int i = 0; i < 51; i++)
-		dif[i] = data[i] - E[i];
+		dif[i] = ::data[i] - E[i];
 				
 	for (int i = 0; i < 51; i++)
 		for (int j = 0; j < 51; j++)
