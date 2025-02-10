@@ -22,41 +22,37 @@ class EnergyProfile {
   int n;
   double Emin;
   double Emax;
-  double *prob;
-  double *prob2;  // for dis
+  std::vector<double> prob, prob2;
 
   TH1D* spectrum;
-  double *Elow;
-  double *Ehigh;
+  std::vector<double> Elow, Ehigh;
   bool roothist;
   
  public:
   ~EnergyProfile() {
-    delete[] prob;
-    delete[] prob2;
   }
 
   /// Beam of Zero Energy
- EnergyProfile() : n(0), Emin(0), Emax(0), prob(NULL), prob2(NULL), roothist(false)  {}
+ EnergyProfile() : n(0), Emin(0), Emax(0), prob({}), prob2({}), roothist(false)  {}
 
   /// Monoenergetic beam
- EnergyProfile(double E) : n(0), Emin(E), Emax(E), prob(NULL), prob2(NULL), roothist(false) {}
+ EnergyProfile(double E) : n(0), Emin(E), Emax(E), prob({}), prob2({}), roothist(false) {}
 
   /// uniform probability density betweeen E1 and E2
   EnergyProfile(double E1, double E2)
-    : n(1), Emin(E1), Emax(E2), prob(NULL), prob2(NULL), roothist(false) {}
+    : n(1), Emin(E1), Emax(E2), prob({}), prob2({}), roothist(false) {}
 
   /// energy profile given by a histogram encoded in a string
   /// the string contains space separated values:
   /// Emin Emax b1 b2 ... bn
   /// where b1 b2 ... bn are the heightsof the bars of the histogram
   /// the widths are assumed equal to (Emax-Emin)/n
- EnergyProfile(string s) : n(0), Emin(0), Emax(0), prob(NULL), prob2(NULL), roothist(false) {
+ EnergyProfile(string s) : n(0), Emin(0), Emax(0), prob({}), prob2({}), roothist(false) {
     read(s);
   }
 
   // Energy Profile From File and histogram name
- EnergyProfile(string f, string h) : n(0), Emin(0), Emax(0), prob(NULL), prob2(NULL), roothist(true) {
+ EnergyProfile(string f, string h) : n(0), Emin(0), Emax(0), prob({}), prob2({}), roothist(true) {
     readHistRoot(f, h, false);
   }
 
@@ -109,9 +105,8 @@ class EnergyProfile {
 
 /// parse the string parameter to the EnergyProfile constructor
 inline void EnergyProfile::read(string s) {
-  if (prob) delete[] prob;
-  if (prob2) delete[] prob2;
-  prob2 = prob = NULL;
+  prob.clear();
+  prob2.clear();
   Emin = Emax = n = 0;
 
   stringstream in(s);
@@ -120,20 +115,22 @@ inline void EnergyProfile::read(string s) {
   Emax *= MeV;
   if (!in || Emax==Emin) return;
   
-  double *bufor = new double[5000];
+  std::vector <double> bufor;
     
-  while (in >> bufor[n]) 
+  while (in >> bufor.emplace_back()) 
     n++;
 
   if (n == 0) 
-  {  n = 1;
-     bufor[0] = 1;
+  {  
+    bufor.resize(1);
+    n = 1;
+    bufor[0] = 1;
   }
 
-  prob = new double[n];
-  prob2 = new double[n];
-  Elow  = new double[n];
-  Ehigh = new double[n];
+  prob.resize(n);
+  prob2.resize(n);
+  Elow.resize(n);
+  Ehigh.resize(n);
   
   double prev1 = 0, prev2 = 0;
   for (int i = 0; i < n; i++) {
@@ -145,17 +142,14 @@ inline void EnergyProfile::read(string s) {
     prob[i] = prev1 += bufor[i];
     prob2[i] = prev2 += bufor[i] * E;
   }
-  
-  delete[] bufor;
 }
 
 // Read in a flux histogram for the spectrum
 inline void EnergyProfile::readHistRoot(string f, string h, bool inMEV){
 
   // Initial Setup
-  if (prob) delete[] prob;
-  if (prob2) delete[] prob2;
-  prob2 = prob = NULL;
+  prob.clear();
+  prob2.clear();
   Emin = Emax = n = 0;
 
   // Read in histogram
@@ -198,10 +192,10 @@ inline void EnergyProfile::readHistRoot(string f, string h, bool inMEV){
 
   n = spectrum->GetNbinsX();
 
-  prob  = new double[n];
-  prob2 = new double[n];
-  Elow  = new double[n];
-  Ehigh = new double[n];
+  prob.resize(n);
+  prob2.resize(n);
+  Elow.resize(n);
+  Ehigh.resize(n);
 
   double prev1 = 0;
   double prev2 = 0;
@@ -228,7 +222,7 @@ inline void EnergyProfile::readHistRoot(string f, string h, bool inMEV){
 inline double EnergyProfile::shoot(bool dis) {
   if (n == 0) return Emin;
   
-  double *pro = dis ? prob2 : prob;
+  auto &pro = dis ? prob2 : prob;
   double x = frandom() * pro[n - 1];
   int i = 0, j = n - 1;
   while (i < j) {
