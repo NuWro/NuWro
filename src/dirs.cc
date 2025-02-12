@@ -41,20 +41,23 @@ void set_dirs (char* exename)
 	 { char *p=getenv("PATH");
 	   if(p)
 	   { 
-		   while(*p)
-		   {
-			   char *q=p;
-			   while(*q && *q!=':') 
-				  q++;
-			   if(*q) 
-				 *q++=0;
-			   if(ifstream((string(p)+"/"+exename).c_str()))
-				  {bin_dir=string(p)+"/";
-				   data_dir=bin_dir+"../data/";
-				   return;
-				  }
-				p=q;
-		   }
+               string duplicated_path = p;
+               size_t idx_begin = 0;
+               size_t idx_end = duplicated_path.find(':');
+               while (true) {
+                   std::string bin_path = duplicated_path.substr(idx_begin, idx_end-idx_begin);
+                   if (ifstream((bin_path+"/"+exename).c_str())) {
+                       bin_dir=bin_path+"/";
+                       data_dir=bin_dir+"../data/";
+                       return;
+                   }
+                   if (idx_end == string::npos) {
+                       break;
+                   }
+                   idx_begin = idx_end+1;
+                   idx_end = duplicated_path.find(':', idx_begin);
+               }
+
    	   } 	
 	 } 
 	 // try to use the environment variable "NUWRO"
